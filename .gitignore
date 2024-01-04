@@ -1,1 +1,2 @@
-ansible/group_vars/all/vault-password-file
+vault-password-file
+.env
