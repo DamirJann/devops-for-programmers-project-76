@@ -30,11 +30,11 @@
           - 80:3000
           - 443:3000
         env:
-          REDMINE_DB_POSTGRES: "{{DB_HOST}}"
-          REDMINE_DB_USERNAME: "{{DB_USERNAME}}"
-          REDMINE_DB_PASSWORD: "{{DB_PASSWORD}}"
-          REDMINE_DB_PORT: "{{DB_PORT}}"
-          REDMINE_DB_DATABASE: "{{DB_NAME}}"
+          REDMINE_DB_POSTGRES: "{{ DB_HOST }}"
+          REDMINE_DB_USERNAME: "{{ DB_USERNAME }}"
+          REDMINE_DB_PASSWORD: "{{ DB_PASSWORD }}"
+          REDMINE_DB_PORT: "{{ DB_PORT }}"
+          REDMINE_DB_DATABASE: "{{ DB_NAME }}"
 
     - name: Import the Datadog Agent role from the Datadog collection
       import_role:
