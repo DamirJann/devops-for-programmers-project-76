@@ -1,44 +1,40 @@
 - hosts: all
   remote_user: root
   tasks:
-#    - name: print home_dirs variable
-#      ansible.builtin.debug:
-#        var: groups
-#    - name: Install pip and docker module
-#      import_role:
-#        name: geerlingguy.pip
-#
-#    - name: Add Docker GPG apt Key
-#      apt_key:
-#        url: https://download.docker.com/linux/ubuntu/gpg
-#        state: present
-#
-#    - name: Add Docker Repository
-#      apt_repository:
-#        repo: deb https://download.docker.com/linux/ubuntu focal stable
-#        state: present
-#
-#    - name: Update apt and install docker-ce
-#      apt:
-#        name: docker-ce
-#        state: latest
-#        update_cache: true
-#    - name: Deploy redmine
-#      community.docker.docker_container:
-#        name: redmine
-#        image: "redmine"
-#        restart_policy: always
-#        state: started
-#        ports:
-#          - 80:3000
-#          - 443:3000
-##        env_file: .env
-#        env:
-#          REDMINE_DB_POSTGRES: "{{DB_HOST}}"
-#          REDMINE_DB_USERNAME: "{{DB_USERNAME}}"
-#          REDMINE_DB_PASSWORD: "{{DB_PASSWORD}}"
-#          REDMINE_DB_PORT: "{{DB_PORT}}"
-#          REDMINE_DB_DATABASE: "{{DB_NAME}}"
+    - name: Install pip and docker module
+      import_role:
+        name: geerlingguy.pip
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: Deploy redmine
+      community.docker.docker_container:
+        name: redmine
+        image: "redmine"
+        restart_policy: always
+        state: started
+        ports:
+          - 80:3000
+          - 443:3000
+        env:
+          REDMINE_DB_POSTGRES: "{{DB_HOST}}"
+          REDMINE_DB_USERNAME: "{{DB_USERNAME}}"
+          REDMINE_DB_PASSWORD: "{{DB_PASSWORD}}"
+          REDMINE_DB_PORT: "{{DB_PORT}}"
+          REDMINE_DB_DATABASE: "{{DB_NAME}}"
 
     - name: Import the Datadog Agent role from the Datadog collection
       import_role:
