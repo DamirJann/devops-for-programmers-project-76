@@ -43,4 +43,4 @@
     - name: Import the Datadog Agent role from the Datadog collection
       import_role:
         name: datadog.dd.agent
-      when: inventory_hostname IN groups["webservers"]
+      when:  "webservers" IN groups AND inventory_hostname IN groups["webservers"]
