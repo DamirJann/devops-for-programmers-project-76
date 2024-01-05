@@ -3,7 +3,7 @@
   tasks:
     - name: print home_dirs variable
       ansible.builtin.debug:
-        var: groups["webservers"]
+        var: groups
     - name: Install pip and docker module
       import_role:
         name: geerlingguy.pip
