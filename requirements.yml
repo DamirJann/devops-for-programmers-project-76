@@ -1,5 +1,5 @@
 roles:
-  - name: geerlingguy.pip
+  - geerlingguy.pip
 
 collections:
   - datadog.dd

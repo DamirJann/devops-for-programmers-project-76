@@ -1,0 +1,9 @@
+pip_package: python3-pip
+pip_executable: pip
+pip_install_packages:
+  - name: docker
+DB_USERNAME: doadmin
+DB_PASSWORD: AVNS_Nfa38b92bWchW3VLUpC
+DB_HOST: db-postgresql-sfo3-72683-do-user-15505538-0.c.db.ondigitalocean.com
+DB_PORT: "25060"
+DB_NAME: defaultdb
