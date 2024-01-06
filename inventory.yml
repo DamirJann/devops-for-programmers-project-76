@@ -6,7 +6,3 @@ all:
           ansible_host: 164.92.68.187
         web2:
           ansible_host: 146.190.147.239
-    webservers1:
-      hosts:
-        web3:
-          ansible_host: 146.190.147.239
