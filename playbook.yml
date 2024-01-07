@@ -1,8 +1,25 @@
 - hosts: all
   remote_user: root
   tasks:
-    - name: prepare server for deploy
-      ansible.builtin.import_playbook: setup.yml
+    - name: Install pip and docker module
+      import_role:
+        name: geerlingguy.pip
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
 
     - name: Set .env from environment.j2
       ansible.builtin.template:
@@ -36,13 +53,13 @@
         name: datadog.datadog
 
     - name: configure http_check
-      copy:
-        src: services/datalog.conf.yml
-        dest: /etc/datadog-agent/conf.d/http_check.yaml
+      ansible.builtin.copy:
+        src: ./services/datadog/conf.yml
+        dest: /etc/datadog-agent/conf.d/http_check.d/conf.yaml
       notify: restart datadog agent
 
   handlers:
-    - name: datadog restart
+    - name: restart datadog agent
       ansible.builtin.service:
         name: datadog-agent
         state: restarted
