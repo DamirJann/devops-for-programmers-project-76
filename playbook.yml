@@ -1,23 +1,21 @@
 - hosts: all
   remote_user: root
   tasks:
-    - name: Install pip and docker module
-      import_role:
-        name: geerlingguy.pip
+    - name: prepare server for deploy
+      ansible.builtin.import_playbook: setup.yml
 
-    - name: Add Docker GPG apt Key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-    - name: Preparation for redmine deploy
-      ansible.builtin.copy:
-        src: .env.example
+    - name: Set .env from environment.j2
+      ansible.builtin.template:
+        src: templates/environment.j2
         dest: ./.env
+      when: '"webservers" in groups and inventory_hostname in groups["webservers"]'
+
+    - name: Set .env from .env.example
+      ansible.builtin.file:
+        path: .env
+        state: touch
+      when: '"webservers" not in groups or inventory_hostname not in groups["webservers"]'
+
     - name: Deploy redmine
       community.docker.docker_container:
         name: redmine
@@ -27,15 +25,24 @@
         ports:
           - 80:3000
           - 443:3000
-        env_file: ./.env
-        env:
-          REDMINE_DB_POSTGRES: "{{ REDMINE_DB_POSTGRES }}"
-          REDMINE_DB_USERNAME: "{{ REDMINE_DB_USERNAME }}"
-          REDMINE_DB_PASSWORD: "{{ REDMINE_DB_PASSWORD }}"
-          REDMINE_DB_PORT: "{{ REDMINE_DB_PORT }}"
-          REDMINE_DB_DATABASE: "{{ REDMINE_DB_DATABASE }}"
+        env_file: .env
 
+
+- hosts: webservers
+  remote_user: root
+  tasks:
     - name: Import the Datadog Agent role from the Datadog collection
       import_role:
-        name: datadog.dd.agent
-      when:  '"webservers" in groups and inventory_hostname in groups["webservers"]'
+        name: datadog.datadog
+
+    - name: configure http_check
+      copy:
+        src: services/datalog.conf.yml
+        dest: /etc/datadog-agent/conf.d/http_check.yaml
+      notify: restart datadog agent
+
+  handlers:
+    - name: datadog restart
+      ansible.builtin.service:
+        name: datadog-agent
+        state: restarted

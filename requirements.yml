@@ -1,6 +1,6 @@
 roles:
   - geerlingguy.pip
+  - datadog.datadog
 
 collections:
-  - datadog.dd
   - community.docker
