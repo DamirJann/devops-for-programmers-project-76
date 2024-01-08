@@ -18,19 +18,20 @@
     - name: Update apt and install docker-ce
       apt:
         name: docker-ce
-        state: latest
         update_cache: true
 
     - name: Set .env from environment.j2
       ansible.builtin.template:
         src: templates/environment.j2
         dest: ./.env
+        mode: 666
       when: '"webservers" in groups and inventory_hostname in groups["webservers"]'
 
     - name: Set .env from .env.example
       ansible.builtin.file:
         path: .env
         state: touch
+        mode: 666
       when: '"webservers" not in groups or inventory_hostname not in groups["webservers"]'
 
     - name: Deploy redmine
@@ -56,6 +57,7 @@
       ansible.builtin.copy:
         src: ./services/datadog/conf.yml
         dest: /etc/datadog-agent/conf.d/http_check.d/conf.yaml
+        mode: 666
       notify: restart datadog agent
 
   handlers:
